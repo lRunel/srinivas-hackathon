@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap - Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling - Dark Mode Only */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #1e1e2e;
+            color: #f8f8f2;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #27ae60; /* Green */
+        }
+
+        /* Section Form Styling */
+        section {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: #282a36;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #27ae60; /* Green */
+            color: #f8f8f2;
+        }
+
+        section h2 {
+            color: #27ae60; /* Green */
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        form input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #3a3a4a;
+            color: #f8f8f2;
+        }
+
+        form input::placeholder {
+            color: #bbb;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            padding-right: 2.5rem;
+        }
+
+        .password-container .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 36%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #bbb;
+            font-size: 1.4rem;
+        }
+
+        form button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #27ae60; /* Green */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .flash-message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Success Message */
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Error Message */
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Info Message */
+        .flash-message.info {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        /* Warning Message */
+        .flash-message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Fade out effect after 3 seconds */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .flash-message.hide {
+            animation: fadeOut 1s forwards;
+        }
+
+
+        form button:hover {
+            background-color: #1e874b; /* Darker Green */
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+    <header>
+        <h1>SkillSwap</h1>
+    </header>
+
+    <section>
+        <form id="register-form" action="/signup" method="POST">
+            <h2>Register</h2>
+            <input type="text" id="name" name="name" placeholder="Name" required><br>
+            <input type="email" id="email" name="email" placeholder="Email" required><br>
+            <input type="tel" id="phone" name="phone" placeholder="Phone Number" required><br>
+            
+            <!-- Password with toggle icon -->
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Create Password" required>
+                <span class="toggle-password" id="toggle-password">&#128065;</span>
+            </div>
+        
+            <!-- Confirm Password -->
+            <div class="password-container">
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+                <span class="toggle-password" id="toggle-confirm-password">&#128065;</span>
+            </div>
+        
+            <button type="submit">Register</button>
+            <p id="error-message"></p>
+        </form>
+        
+    </section>
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => msg.classList.add('hide'));
+        }, 3000);
+    </script>
+    
+
+    <!-- <script>
+        const registerForm = document.getElementById('register-form');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const togglePassword = document.getElementById('toggle-password');
+        const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+        const errorMessage = document.getElementById('error-message');
+
+        // Toggle Password Visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+
+            // Change the icon
+            togglePassword.textContent = type === 'password' ? '\u{1F441}' : '\u{1F441}\uFE0E'; // Eye icons
+        });
+
+        toggleConfirmPassword.addEventListener('click', () => {
+            const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+            confirmPasswordInput.type = type;
+
+            // Change the icon
+            toggleConfirmPassword.textContent = type === 'password' ? '\u{1F441}' : '\u{1F441}\uFE0E';
+        });
+
+        // Password Match Validation
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent form submission
+
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                errorMessage.textContent = 'Passwords do not match!';
+            } else {
+                errorMessage.textContent = '';
+                // alert('Registration successful!');
+
+                // Save user data in localStorage
+                const user = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    password: passwordInput.value
+                };
+
+                // Store user data in localStorage
+                localStorage.setItem('user', JSON.stringify(user));
+
+                // Redirect to another page (e.g., skills page)
+                window.location.href = '/mskills'; // Adjust the path as needed
+            }
+        });
+    </script> -->
+</body>
+</html>

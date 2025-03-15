@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.name }}'s Profile</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+
+        /* Profile Container */
+        .profile-container {
+            padding: 50px;
+            background-color: #fff;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 50px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Profile Header */
+        .profile-header {
+            margin-bottom: 30px;
+        }
+
+        .profile-pic img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #555;
+        }
+
+        /* Profile Details */
+        .profile-details {
+            padding: 20px;
+        }
+
+        .profile-details p {
+            font-size: 1.2rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ user.name }}'s Profile</h1>
+    </header>
+    <main>
+        <div class="profile-container">
+            <div class="profile-pic">
+                <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Profile Picture">
+            </div>
+            <h2>{{ user.name }}</h2>
+            <p>Email: {{ user.email }}</p>
+            <p>Phone: {{ user.phone }}</p>
+
+            <h3>Skills:</h3>
+            <ul>
+                {% for skill in skills %}
+                    <li>{{ skill.skill_name }} ({{ skill.category }})</li>
+                {% endfor %}
+            </ul>
+
+            <a href="{{ url_for('videocall') }}" class="button">Start Video Call</a>
+        </div>
+    </main>
+</body>
+</html>
+<script>
+        // Extract query parameters from the URL
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name");
+const skill = params.get("skill");
+
+// Set the profile name and skill on the page
+document.getElementById("profile-name").innerText = name || "Unknown Name";
+document.getElementById("profile-skill").innerText = skill || "Unknown Skill";
+
+// Optional: Set a default profile picture based on the name or skill
+const profilePic = document.getElementById("profile-pic");
+const description = document.getElementById("profile-description");
+
+if (name === "Emily Clark") {
+    profilePic.src = "images/emily-clark-profile.jpg";
+    description.innerText = "Emily is a Python expert and loves teaching programming to beginners.";
+} else if (name === "David Lee") {
+    profilePic.src = "images/david-lee-profile.jpg";
+    description.innerText = "David is passionate about JavaScript and has created several projects using JS.";
+} else if (name === "Sophia Williams") {
+    profilePic.src = "images/sophia-williams-profile.jpg";
+    description.innerText = "Sophia is a web development guru specializing in HTML, CSS, and front-end technologies.";
+} else {
+    profilePic.src = "images/default-profile.png";
+    description.innerText = "This is a generic profile.";
+}
+
+    </script>
+</body>
+</html>

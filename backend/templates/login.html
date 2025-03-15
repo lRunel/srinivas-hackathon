@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;  /* Dark mode background */
+            color: white;  /* White text for dark mode */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header styling */
+        header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.5em;
+            color: #00c1c7;
+        }
+
+        /* Login form styling */
+        section {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        form {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #777;
+            border-radius: 4px;
+            background-color: #555;
+            color: white;
+        }
+
+        /* Password field with show/hide icon */
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            padding-right: 30px;  /* Space for the show/hide icon */
+        }
+
+        .password-container .show-password-icon {
+            position: absolute;
+            top: 34%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00c1c7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        form button:hover {
+            background-color: #00a0a4;
+        }
+
+        /* Flash message */
+        #error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .flash-message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Success Message */
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Error Message */
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Info Message */
+        .flash-message.info {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        /* Warning Message */
+        .flash-message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Fade out effect after 3 seconds */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .flash-message.hide {
+            animation: fadeOut 1s forwards;
+        }
+
+
+        form button:hover {
+            background-color: #1e874b; /* Darker Green */
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SkillSwap</h1>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+    <section>
+        <form action='/login' method="POST" id="login-form">
+            <h2>Login</h2>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <div class="password-container">
+                <input type="password" name="password" id="password" placeholder="Password" required><br>
+                <span class="show-password-icon" id="show-password-icon">👁️</span>
+            </div>
+            <button type="submit">Login</button>
+
+            <!-- Flash message for error or success -->
+            <p id="error-message"></p>
+        </form>
+    </section>
+
+    <script>
+        // Show/hide password functionality
+        document.getElementById('show-password-icon').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const currentType = passwordField.type;
+            if (currentType === 'password') {
+                passwordField.type = 'text';  // Show password
+            } else {
+                passwordField.type = 'password';  // Hide password
+            }
+        });
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => msg.classList.add('hide'));
+        }, 3000);
+    </script>
+</body>
+</html>

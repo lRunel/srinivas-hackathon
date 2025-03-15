@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Management</title>
+    <style>
+        /* Global Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212; /* Dark theme */
+            color: #00ff6a; /* Green text */
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .column {
+            flex: 1;
+            margin: 0 10px;
+            padding: 20px;
+            background-color: #1e1e1e; /* Slightly lighter black */
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .column h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .skills-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .skill {
+            background-color: #2d6a4f; /* Dark green */
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skill.selected {
+            background-color: #00ff6a; /* Bright Green for selected */
+            color: #121212; /* Dark text */
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 70%;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #00ff6a;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #00cc56; /* Darker green */
+        }
+
+        .next-button {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background-color: #00ff6a;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-button:hover {
+            background-color: #00cc56;
+        }
+        .flash-message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Success Message */
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Error Message */
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Info Message */
+        .flash-message.info {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        /* Warning Message */
+        .flash-message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Fade out effect after 3 seconds */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .flash-message.hide {
+            animation: fadeOut 1s forwards;
+        }
+
+
+        form button:hover {
+            background-color: #1e874b; /* Darker Green */
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Skill Management</h1>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+  <form id="skills-form" action="/home" method="POST">
+    <div class="container">
+        <div class="column" id="skills-known">
+            <h2>Skills I Know</h2>
+            <div class="skills-box" id="known-skills-box">
+                <!-- Predefined skills for "Skills I Know" -->
+                <div class="skill" onclick="toggleSkill(this, 'known')">HTML</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Cooking</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Public Speaking</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Python</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Writing</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Painting</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Event Management</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Problem Solving</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Fitness Training</div>
+                <div class="skill" onclick="toggleSkill(this, 'known')">Gardening</div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="known-skill-input" placeholder="Add a skill you know...">
+                <button type="button" onclick="addSkill('known')">Add Skill</button>
+
+
+            </div>
+        </div>
+
+        <div class="column" id="skills-learn">
+            <h2>Skills I Want to Learn</h2>
+            <div class="skills-box" id="learn-skills-box">
+                <!-- Predefined skills for "Skills I Want to Learn" -->
+                <div class="skill" onclick="toggleSkill(this, 'learn')">React</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Cooking</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Public Speaking</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Python</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Writing</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Painting</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">C++</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Event Management</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Fitness Training</div>
+                <div class="skill" onclick="toggleSkill(this, 'learn')">Gardening</div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="learn-skill-input" placeholder="Add a skill you want to learn...">
+                <button type="button" onclick="addSkill('learn')">Add Skill</button>
+
+
+            </div>
+        </div>
+    </div>
+
+    <button class="next-button" type="button" onclick="goToNextPage(event)">Done</button>
+</form>
+    <script>
+        const selectedSkills = {
+    known: new Set(),
+    learn: new Set()
+};
+
+// Function to toggle selection of a skill
+function toggleSkill(element, type) {
+    const skill = element.textContent.trim();
+
+    if (selectedSkills[type].has(skill)) {
+        selectedSkills[type].delete(skill);
+        element.classList.remove('selected');
+    } else {
+        selectedSkills[type].add(skill);
+        element.classList.add('selected');
+    }
+
+    saveSkillsToLocal();
+}
+
+// Function to add a skill manually
+function addSkill(type) {
+    const inputId = type === 'known' ? 'known-skill-input' : 'learn-skill-input';
+    const boxId = type === 'known' ? 'known-skills-box' : 'learn-skills-box';
+
+    const skillInput = document.getElementById(inputId);
+    const skillName = skillInput.value.trim();
+
+    if (!skillName) {
+        alert('Please enter a skill name!');
+        return;
+    }
+
+    if (!selectedSkills[type].has(skillName)) {
+        const skillBox = document.createElement('div');
+        skillBox.className = 'skill';
+        skillBox.textContent = skillName;
+        skillBox.onclick = () => toggleSkill(skillBox, type);
+
+        document.getElementById(boxId).appendChild(skillBox);
+        selectedSkills[type].add(skillName);
+        saveSkillsToLocal();
+    }
+
+    skillInput.value = ''; // Clear input field
+}
+
+// Function to save skills locally
+function saveSkillsToLocal() {
+    localStorage.setItem('skills', JSON.stringify({
+        known: Array.from(selectedSkills.known),
+        learn: Array.from(selectedSkills.learn)
+    }));
+}
+
+// Function to load skills from localStorage
+function loadSkillsFromLocal() {
+    const savedSkills = JSON.parse(localStorage.getItem('skills'));
+
+    if (savedSkills) {
+        selectedSkills.known = new Set(savedSkills.known);
+        selectedSkills.learn = new Set(savedSkills.learn);
+
+        renderSavedSkills('known');
+        renderSavedSkills('learn');
+    }
+}
+
+// Function to render saved skills
+function renderSavedSkills(type) {
+    const boxId = type === 'known' ? 'known-skills-box' : 'learn-skills-box';
+    const box = document.getElementById(boxId);
+    
+    selectedSkills[type].forEach(skill => {
+        const skillBox = document.createElement('div');
+        skillBox.className = 'skill selected';
+        skillBox.textContent = skill;
+        skillBox.onclick = () => toggleSkill(skillBox, type);
+        box.appendChild(skillBox);
+    });
+}
+
+// Function to send selected skills to backend
+function goToNextPage(event) {
+    event.preventDefault(); // Stop form from submitting
+
+    let skillsToSend = [];
+
+    // Collect selected "Skills I Know"
+    selectedSkills.known.forEach(skill => {
+        skillsToSend.push({ skill: skill, category: 'known' });
+    });
+
+    // Collect selected "Skills I Want to Learn"
+    selectedSkills.learn.forEach(skill => {
+        skillsToSend.push({ skill: skill, category: 'learn' });
+    });
+
+    console.log("📤 Sending Skills:", skillsToSend); // Debugging log
+
+    fetch('/mskills', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ skills: skillsToSend })
+})
+.then(data => {
+        console.log("✅ Server Response:", data);
+        window.location.href = "/home";  // Redirect to /home
+    })
+
+.catch(error => {
+    console.error("❌ Error saving skills:", error);
+    alert("Error saving skills. Check console for details.");
+});
+}
+
+
+// Automatically hide flash messages after 3 seconds
+
+
+
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => msg.classList.add('hide'));
+        }, 3000);
+    </script>
+</body>
+</html>

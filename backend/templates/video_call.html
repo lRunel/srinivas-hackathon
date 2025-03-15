@@ -103,8 +103,13 @@
 
             // Handle ICE candidates
             socket.on("candidate", data => {
-                peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate))
-                    .catch(error => console.error("ICE Candidate Error:", error));
+                if (peerConnection) {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate))
+                        .catch(error => console.error("ICE Candidate Error:", error));
+                } else {
+                    console.warn("PeerConnection is not initialized yet. Storing ICE candidate...");
+                    pendingCandidates.push(data.candidate);  // Store candidate for later
+                }
             });
         }
 

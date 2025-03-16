@@ -1,6 +1,6 @@
-from backend import app,db
+from website import app,db
 from flask_login import login_required, current_user
-from backend.model import User,Skill
+from website.model import User,Skill
 from flask import render_template,jsonify,request
 
 @app.route('/home', methods=['GET', 'POST'])

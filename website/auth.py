@@ -1,8 +1,8 @@
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask import request,flash,redirect,render_template
 from werkzeug.security import generate_password_hash, check_password_hash
-from backend.model import User
-from backend import app,db
+from website.model import User
+from website import app,db
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'

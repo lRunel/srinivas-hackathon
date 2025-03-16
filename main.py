@@ -1,4 +1,4 @@
-from backend import app,socketio
+from website import app,socketio
 import eventlet
 
 if __name__ == '__main__':    # Create database tables
